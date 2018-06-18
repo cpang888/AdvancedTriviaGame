@@ -19,10 +19,20 @@
   background-color: blue
  } */
 
+ .answerChoice {
+   width: 200px;
+   height: 50px;
+   text-align: center;
+   margin-left: 40%;
+
+   /* border: blue;
+   background-color: aqua; */
+ }
+
  .text {
   text-align: center;;
   font-size: 40px;
-  background-color: red;
+  /* background-color:blue; */
   
  }
 

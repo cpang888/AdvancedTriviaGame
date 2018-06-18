@@ -98,12 +98,14 @@ var questions = [
           $("#unanswer").hide();
           $("#doneBtn").hide();
 
+          // number = 30;
+          // numberImg = 3;
           run();
       })
 
       // added the hover effect when user hover the answer
       $(".answerChoice").hover(function() {
-        $(this).css("background-color", "red");
+        $(this).css("background-color", "aqua");
       }, function() {
         $(this).css("background-color", "");
       })
@@ -112,6 +114,7 @@ var questions = [
         var newImg = $("<img>");
         newImg.attr("src", question.image);
         $("#question0").append(newImg);
+        // show image for 3 seconds
         intervalIdImg = setInterval(function(){imageTimer()}, 1000);
       }
 
@@ -136,6 +139,7 @@ var questions = [
           var startOverBtn = $("<button>");
           startOverBtn.text("Start Over?");
           $("#startOverBtn").append(startOverBtn);
+          // stop();
         }
       }
 
@@ -152,6 +156,8 @@ var questions = [
             questionCounter++;
   
             // show next question
+            // number = 30;
+            // numberImg = 3;
             run();
             
           } else {
@@ -168,8 +174,11 @@ var questions = [
 
         number--;
   
-        if(number < 0) return;
-
+        if(number < 0) {
+          // number = 30;
+          // stop();
+          return;
+        }
         $("#show-number").html("<h2> Time Remaining: " + number + " Seconds </h2>");
   
         if (number <= 0 ) {
@@ -180,6 +189,8 @@ var questions = [
             questionCounter++;
   
             // show next question
+            // number = 30;
+            // numberImg = 3;
             run();
             
           } else {
