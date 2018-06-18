@@ -8,14 +8,20 @@ var questions = [
           answer: 3, image:"assets/images/2.PNG"}
 ];
   
-    var number = 10;
+    var number = 30;
+    var numberImg = 3;
 
+    var intervalIdImg;
     var intervalId;
     var questionCounter = 0;
+    var unanswer = 0;
+    var correctAnswer = 0;
+    var incorrectAnswer = 0;
 
     function run() {
 
-      number = 10;
+      number = 30;
+      numberImg = 3;
 
       intervalId = setInterval(decrement, 1000);
 
@@ -36,8 +42,6 @@ var questions = [
           answerOption.text(question.choices[i]);
           answerOption.attr("data-index", i);
           $("#question0").append(answerOption);
-
-
         }
 
       $(".answerChoice").on("click", function(event) {
@@ -48,38 +52,53 @@ var questions = [
 
         $("#question0").empty();
 
-          if(userSelect == question.answer) {
-              // user picks the correct answer
-              // $("#question0").empty();
-              correctAnswer++;
+        if(userSelect == question.answer) {
+            // user picks the correct answer
+            correctAnswer++;
 
-              // show "Correct!"
-              var newDiv = $("<div>");
-              newDiv.append("Correct!");
-              $("#question0").append(newDiv);
+            // show "Correct!"
+            var newDiv = $("<div>");
+            newDiv.append("Correct!");
+            $("#question0").append(newDiv);
 
-              // show image
-              showImage();
-             
-          } else {
-              // user picks the incorrect answer
-              incorrectAnswer++;
+            // show image
+            showImage();
+            
+        } else {
+            // user picks the incorrect answer
+            incorrectAnswer++;
 
-              // show "Nope" 
-              var newDiv = $("<div>");
-              newDiv.append("Nope!");
-              $("#question0").append(newDiv);
-              // show "The correct answer was: XXX"
-              var newDiv2 = $("<div>");
-              newDiv2.append("The Correct Answer was: " + question.choices[question.answer]);
-              $("#question0").append(newDiv2);
-              // show image
-              showImage();
-          }
-          // go to next questoin
-          // stop();
-          // questionCounter++;
-          // run();
+            // show "Nope" 
+            var newDiv = $("<div>");
+            newDiv.append("Nope!");
+            $("#question0").append(newDiv);
+            // show "The correct answer was: XXX"
+            var newDiv2 = $("<div>");
+            newDiv2.append("The Correct Answer was: " + question.choices[question.answer]);
+            $("#question0").append(newDiv2);
+            // show image
+            showImage();
+            
+        }
+
+      })
+
+
+      $("#startOverBtn").on("click", function(event) {
+          // show question 1 again
+          questionCounter = 0;
+          unanswer = 0;
+          correctAnswer = 0;
+          incorrectAnswer = 0;
+
+          $("#startOverBtn").empty();
+          $("#log").empty();
+          $("#correctAnswer").hide();
+          $("#incorrectAnswer").hide();
+          $("#unanswer").hide();
+          $("#doneBtn").hide();
+
+          run();
       })
 
       // added the hover effect when user hover the answer
@@ -93,38 +112,87 @@ var questions = [
         var newImg = $("<img>");
         newImg.attr("src", question.image);
         $("#question0").append(newImg);
-
+        intervalIdImg = setInterval(function(){imageTimer()}, 1000);
       }
 
+      function showAllDone() {
 
+        // $("#show-number").hide();
+  
+        // show All Done!
+        $("#log").text("All Done!");
+        $("#correctAnswer").show();
+        $("#incorrectAnswer").show();
+        $("#unanswer").show();
+        $("#doneBtn").hide();
+  
+        $("#correctAnswer").html("<span> Correct Answers: " + correctAnswer + "</span>");
+        $("#incorrectAnswer").html("<span> Incorrect Answers: " + incorrectAnswer + "</span>");
+        // $("#unanswer").html("<span> Unanswer: " + unanswer + "</span>");
+        unanswer = questions.length - correctAnswer - incorrectAnswer;
+        $("#unanswer").html("<span> Unanswer: " + unanswer + "</span>");
 
-    } // end of run()
-
-    function decrement() {
-
-      number--;
-
-      $("#show-number").html("<h2> Time Remaining: " + number + " Seconds </h2>");
-
-      if (number <= 0 ) {
-        console.log("questionCounter: " + questionCounter);
-        console.log("questions.length: " + questions.length);
-        if( questionCounter < questions.length-1 ) {
-          stop();
-          questionCounter++;
-
-          // show next question
-          run();
-          
-        } else {
-          // stop the game
-          stop();
-          // show the correct/incorrect/unswered answer counter
-          hideQuestion();
-          showAllDone();
+        if($("#startOverBtn").empty()) {
+          var startOverBtn = $("<button>");
+          startOverBtn.text("Start Over?");
+          $("#startOverBtn").append(startOverBtn);
         }
       }
-    }
+
+      function imageTimer() {
+
+        numberImg--;
+  
+        if(numberImg < 0) return;
+
+        if (numberImg <= 0 ) {
+
+          if( questionCounter < questions.length-1 ) {
+            stop();
+            questionCounter++;
+  
+            // show next question
+            run();
+            
+          } else {
+            // stop the game
+            stop();
+            // show the correct/incorrect/unswered answer counter
+            hideQuestion();
+            showAllDone();
+          }
+        }
+      }
+
+      function decrement() {
+
+        number--;
+  
+        if(number < 0) return;
+
+        $("#show-number").html("<h2> Time Remaining: " + number + " Seconds </h2>");
+  
+        if (number <= 0 ) {
+          console.log("questionCounter: " + questionCounter);
+          console.log("questions.length: " + questions.length);
+          if( questionCounter < questions.length-1 ) {
+            stop();
+            questionCounter++;
+  
+            // show next question
+            run();
+            
+          } else {
+            // stop the game
+            stop();
+            // show the correct/incorrect/unswered answer counter
+            hideQuestion();
+            showAllDone();
+          }
+        }
+      }
+
+    } // end of run()
 
     function hideQuestion() {
       $("#question0").hide();
@@ -134,29 +202,6 @@ var questions = [
       $("#correctAnswer").hide();
       $("#incorrectAnswer").hide();
       $("#unanswer").hide();
-    }
-
-    function showAllDone() {
-
-      $("#show-number").hide();
-
-      // show All Done!
-      $("#log").text("All Done!");
-      $("#correctAnswer").show();
-      $("#incorrectAnswer").show();
-      $("#unanswer").show();
-      $("#doneBtn").hide();
-
-      var unanswer = 0;
-      var correctAnswer = 0;
-      var incorrectAnswer = 0;
-
-
-      $("#correctAnswer").html("<span> Correct Answers: " + correctAnswer + "</span>");
-      $("#incorrectAnswer").html("<span> Incorrect Answers: " + incorrectAnswer + "</span>");
-      // $("#unanswer").html("<span> Unanswer: " + unanswer + "</span>");
-      unanswer = questions.length - correctAnswer - incorrectAnswer;
-      $("#unanswer").html("<span> Unanswer: " + unanswer + "</span>");
     }
 
     function start() {
@@ -169,13 +214,10 @@ var questions = [
     }
 
     function stop() {
-
       clearInterval(intervalId);
-
+      clearInterval(intervalIdImg);
     }
     
     $(document).ready(function() {
-
     start();
-
   })
